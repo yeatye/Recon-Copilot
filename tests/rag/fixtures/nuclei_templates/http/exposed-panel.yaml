@@ -1,0 +1,8 @@
+id: exposed-admin-panel
+
+info:
+  name: Exposed Admin Panel
+  author: test-author
+  severity: medium
+  description: An administrative panel is publicly accessible without authentication, potentially allowing unauthorized access to sensitive controls.
+  tags: panel,exposure,misconfig

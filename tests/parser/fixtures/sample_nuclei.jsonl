@@ -1,0 +1,5 @@
+{"template-id": "exposed-panel-generic", "info": {"name": "Exposed Admin Panel", "severity": "medium", "tags": ["panel", "exposure"], "description": "An admin panel is publicly accessible."}, "matched-at": "http://10.0.0.5:80/admin"}
+{"template-id": "tls-version", "info": {"name": "Deprecated TLS Version", "severity": "low", "tags": ["tls", "config"]}, "matched-at": "10.0.0.5:443"}
+this is not json at all
+{"template-id": "", "info": {"severity": "info"}, "matched-at": "10.0.0.5:80"}
+{"template-id": "critical-rce-cve-2026-0001", "info": {"name": "Critical RCE", "severity": "critical", "tags": ["rce", "cve"], "description": "Remote code execution via deserialization."}, "matched-at": "http://10.0.0.5:80/api/deploy"}

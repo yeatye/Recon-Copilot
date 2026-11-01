@@ -1,0 +1,271 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:bb5ceed7-c992-4247-8d4a-37e781f29f90",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-09-11T15:17:30.455484+00:00",
+    "component": {
+      "type": "application",
+      "bom-ref": "engagement",
+      "name": "Juice_Shop"
+    }
+  },
+  "components": [
+    {
+      "type": "application",
+      "bom-ref": "target:127.0.0.1",
+      "name": "127.0.0.1"
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "bom-ref": "vuln:1",
+      "id": "RECON-COPILOT-1",
+      "source": {
+        "name": "recon-copilot"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "recon-copilot"
+          },
+          "severity": "medium",
+          "score": 5.48,
+          "method": "other"
+        }
+      ],
+      "cwes": [
+        200
+      ],
+      "description": "Une page de metriques Prometheus est accessible publiquement sur http://127.0.0.1:3000/metrics. L'exposition de metriques d'observabilite revele des informations internes (versions, chemins, compteurs d'erreurs, parfois noms d'hotes et variables d'environnement) utiles pour cartographier l'application avant exploitation.",
+      "recommendation": "Restreindre /metrics aux reseaux d'administration (filtrage IP, mTLS ou reverse-proxy avec authentification) et supprimer cet endpoint du meme port que l'application utilisateur.",
+      "analysis": {
+        "state": "exploitable",
+        "detail": "Constat valide par revue humaine. Preuve : \"template-id\":\"prometheus-metrics\""
+      },
+      "affects": [
+        {
+          "ref": "target:127.0.0.1"
+        }
+      ]
+    },
+    {
+      "bom-ref": "vuln:2",
+      "id": "RECON-COPILOT-2",
+      "source": {
+        "name": "recon-copilot"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "recon-copilot"
+          },
+          "severity": "medium",
+          "score": 5.48,
+          "method": "other"
+        }
+      ],
+      "cwes": [
+        942
+      ],
+      "description": "La reponse HTTP du service sur le port 3000 renvoie un en-tete Access-Control-Allow-Origin avec la valeur joker, y compris sur les reponses OPTIONS listant les methodes autorisees. Une politique CORS ouverte permet a n'importe quel site de lire les reponses de l'application au nom d'un utilisateur authentifie si des cookies ou identifiants sont envoyes.",
+      "recommendation": "Remplacer la valeur joker par une liste blanche d'origines de confiance, valider l'en-tete Origin cote serveur et n'autoriser les identifiants (Access-Control-Allow-Credentials) qu'avec des origines explicitement approuvees.",
+      "analysis": {
+        "state": "exploitable",
+        "detail": "Constat valide par revue humaine. Preuve : Access-Control-Allow-Origin"
+      },
+      "affects": [
+        {
+          "ref": "target:127.0.0.1"
+        }
+      ]
+    },
+    {
+      "bom-ref": "vuln:3",
+      "id": "RECON-COPILOT-3",
+      "source": {
+        "name": "recon-copilot"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "recon-copilot"
+          },
+          "severity": "low",
+          "score": 4.52,
+          "method": "other"
+        }
+      ],
+      "cwes": [
+        200
+      ],
+      "description": "Un fichier de specification Swagger est accessible publiquement (http://127.0.0.1:3000/api-docs/swagger.yaml). Il expose l'inventaire complet des routes, parametres et schemas de l'API, ce qui facilite la decouverte d'endpoints non documentes ou mal proteges et la construction de requetes ciblees.",
+      "recommendation": "Desactiver l'exposition publique de la specification OpenAPI en production, ou la proteger par authentification et la limiter aux environnements de developpement.",
+      "analysis": {
+        "state": "exploitable",
+        "detail": "Constat valide par revue humaine. Preuve : \"matched-at\":\"http://127.0.0.1:3000/api-docs/swagger.yaml\""
+      },
+      "affects": [
+        {
+          "ref": "target:127.0.0.1"
+        }
+      ]
+    },
+    {
+      "bom-ref": "vuln:4",
+      "id": "RECON-COPILOT-4",
+      "source": {
+        "name": "recon-copilot"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "recon-copilot"
+          },
+          "severity": "low",
+          "score": 4.16,
+          "method": "other"
+        }
+      ],
+      "cwes": [
+        200
+      ],
+      "description": "Le fichier robots.txt est present et son contenu extrait par Nuclei expose une entree disallow pointant vers /ftp. Ce type de directive indique aux robots d'indexation un chemin que le proprietaire souhaite masquer, mais ne protege en rien l'acces direct : cela guide un attaquant vers un repertoire potentiellement sensible.",
+      "recommendation": "Ne pas utiliser robots.txt comme mecanisme de dissimulation. Supprimer le contenu du repertoire /ftp s'il ne doit pas etre servi, ou le proteger par authentification et controle d'acces cote serveur.",
+      "analysis": {
+        "state": "exploitable",
+        "detail": "Constat valide par revue humaine. Preuve : \"extracted-results\":[\"/ftp\"]"
+      },
+      "affects": [
+        {
+          "ref": "target:127.0.0.1"
+        }
+      ]
+    },
+    {
+      "bom-ref": "vuln:5",
+      "id": "RECON-COPILOT-5",
+      "source": {
+        "name": "recon-copilot"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "recon-copilot"
+          },
+          "severity": "low",
+          "score": 4.52,
+          "method": "other"
+        }
+      ],
+      "cwes": [
+        319
+      ],
+      "description": "L'analyse Nuclei indique l'absence de l'en-tete Strict-Transport-Security sur http://127.0.0.1:3000. Sans HSTS, un utilisateur peut etre redirige vers une connexion non chiffree lors d'une attaque de type downgrade ou interception, ce qui expose les cookies de session.",
+      "recommendation": "Activer HTTPS avec un certificat valide et renvoyer l'en-tete Strict-Transport-Security avec un max-age suffisant (ex. 31536000) et includeSubDomains.",
+      "analysis": {
+        "state": "exploitable",
+        "detail": "Constat valide par revue humaine. Preuve : \"matcher-name\":\"strict-transport-security\""
+      },
+      "affects": [
+        {
+          "ref": "target:127.0.0.1"
+        }
+      ]
+    },
+    {
+      "bom-ref": "vuln:6",
+      "id": "RECON-COPILOT-6",
+      "source": {
+        "name": "recon-copilot"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "recon-copilot"
+          },
+          "severity": "low",
+          "score": 3.86,
+          "method": "other"
+        }
+      ],
+      "cwes": [
+        477
+      ],
+      "description": "L'en-tete de reponse Feature-Policy est encore emis (valeur 'payment self'). Cet en-tete est deprecie et remplace par Permissions-Policy : selon les navigateurs, la restriction de fonctionnalites peut devenir inoperante, reduisant la defense en profondeur contre l'abus de fonctionnalites navigateur.",
+      "recommendation": "Migrer vers Permissions-Policy (ex. permissions-policy: payment=(self)) et supprimer l'en-tete Feature-Policy devenu obsolete.",
+      "analysis": {
+        "state": "exploitable",
+        "detail": "Constat valide par revue humaine. Preuve : \"extracted-results\":[\"payment 'self'\"]"
+      },
+      "affects": [
+        {
+          "ref": "target:127.0.0.1"
+        }
+      ]
+    },
+    {
+      "bom-ref": "vuln:7",
+      "id": "RECON-COPILOT-7",
+      "source": {
+        "name": "recon-copilot"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "recon-copilot"
+          },
+          "severity": "info",
+          "score": 2.3,
+          "method": "other"
+        }
+      ],
+      "cwes": [
+        693
+      ],
+      "description": "Nuclei signale l'absence de plusieurs en-tetes de securite sur http://127.0.0.1:3000, notamment la Content-Security-Policy. L'absence de CSP augmente l'impact d'une eventuelle injection de contenu (XSS) puisqu'aucune restriction de sources de scripts n'est imposee par le navigateur.",
+      "recommendation": "Ajouter une Content-Security-Policy restrictive (pas de 'unsafe-inline', sources de scripts limitees), ainsi que les autres en-tetes manquants : Referrer-Policy, Permissions-Policy, X-Permitted-Cross-Domain-Policies et COOP/COEP/CORP.",
+      "analysis": {
+        "state": "exploitable",
+        "detail": "Constat valide par revue humaine. Preuve : \"matcher-name\":\"content-security-policy\""
+      },
+      "affects": [
+        {
+          "ref": "target:127.0.0.1"
+        }
+      ]
+    },
+    {
+      "bom-ref": "vuln:8",
+      "id": "RECON-COPILOT-8",
+      "source": {
+        "name": "recon-copilot"
+      },
+      "ratings": [
+        {
+          "source": {
+            "name": "recon-copilot"
+          },
+          "severity": "info",
+          "score": 2.3,
+          "method": "other"
+        }
+      ],
+      "cwes": [
+        200
+      ],
+      "description": "Un fichier .well-known/security.txt est publiquement accessible et contient une adresse de contact (mailto:donotreply@owasp-juice.shop). Cette information, bien que faiblement sensible, confirme l'organisation proprietaire de la cible et peut alimenter des campagnes de phishing ou d'ingenierie sociale.",
+      "recommendation": "Verifier que l'adresse de contact publiee est une boite de service dediee et non une adresse exploitable, et limiter l'exposition de ce fichier aux environnements de production uniquement.",
+      "analysis": {
+        "state": "exploitable",
+        "detail": "Constat valide par revue humaine. Preuve : \"extracted-results\":[\" mailto:donotreply@owasp-juice.shop\"]"
+      },
+      "affects": [
+        {
+          "ref": "target:127.0.0.1"
+        }
+      ]
+    }
+  ]
+}

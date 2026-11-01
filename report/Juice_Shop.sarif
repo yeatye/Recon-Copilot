@@ -1,0 +1,377 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "recon-copilot",
+          "rules": [
+            {
+              "id": "endpoint-prometheus-metrics-accessible-sans-authentification",
+              "name": "Endpoint Prometheus /metrics accessible sans authentification",
+              "shortDescription": {
+                "text": "Endpoint Prometheus /metrics accessible sans authentification"
+              },
+              "fullDescription": {
+                "text": "Une page de metriques Prometheus est accessible publiquement sur http://127.0.0.1:3000/metrics. L'exposition de metriques d'observabilite revele des informations internes (versions, chemins, compteurs d'erreurs, parfois noms d'hotes et variables d'environnement) utiles pour cartographier l'application avant exploitation."
+              },
+              "help": {
+                "text": "Restreindre /metrics aux reseaux d'administration (filtrage IP, mTLS ou reverse-proxy avec authentification) et supprimer cet endpoint du meme port que l'application utilisateur."
+              },
+              "properties": {
+                "security-severity": "5.48",
+                "tags": [
+                  "security",
+                  "medium",
+                  "CWE-200",
+                  "T1592"
+                ]
+              }
+            },
+            {
+              "id": "politique-cors-permissive-origine-generique-autorisee",
+              "name": "Politique CORS permissive (origine generique autorisee)",
+              "shortDescription": {
+                "text": "Politique CORS permissive (origine generique autorisee)"
+              },
+              "fullDescription": {
+                "text": "La reponse HTTP du service sur le port 3000 renvoie un en-tete Access-Control-Allow-Origin avec la valeur joker, y compris sur les reponses OPTIONS listant les methodes autorisees. Une politique CORS ouverte permet a n'importe quel site de lire les reponses de l'application au nom d'un utilisateur authentifie si des cookies ou identifiants sont envoyes."
+              },
+              "help": {
+                "text": "Remplacer la valeur joker par une liste blanche d'origines de confiance, valider l'en-tete Origin cote serveur et n'autoriser les identifiants (Access-Control-Allow-Credentials) qu'avec des origines explicitement approuvees."
+              },
+              "properties": {
+                "security-severity": "5.48",
+                "tags": [
+                  "security",
+                  "medium",
+                  "CWE-942"
+                ]
+              }
+            },
+            {
+              "id": "documentation-swagger-openapi-publique",
+              "name": "Documentation Swagger / OpenAPI publique",
+              "shortDescription": {
+                "text": "Documentation Swagger / OpenAPI publique"
+              },
+              "fullDescription": {
+                "text": "Un fichier de specification Swagger est accessible publiquement (http://127.0.0.1:3000/api-docs/swagger.yaml). Il expose l'inventaire complet des routes, parametres et schemas de l'API, ce qui facilite la decouverte d'endpoints non documentes ou mal proteges et la construction de requetes ciblees."
+              },
+              "help": {
+                "text": "Desactiver l'exposition publique de la specification OpenAPI en production, ou la proteger par authentification et la limiter aux environnements de developpement."
+              },
+              "properties": {
+                "security-severity": "4.52",
+                "tags": [
+                  "security",
+                  "low",
+                  "CWE-200",
+                  "T1592"
+                ]
+              }
+            },
+            {
+              "id": "robots-txt-revelant-le-repertoire-ftp",
+              "name": "robots.txt revelant le repertoire /ftp",
+              "shortDescription": {
+                "text": "robots.txt revelant le repertoire /ftp"
+              },
+              "fullDescription": {
+                "text": "Le fichier robots.txt est present et son contenu extrait par Nuclei expose une entree disallow pointant vers /ftp. Ce type de directive indique aux robots d'indexation un chemin que le proprietaire souhaite masquer, mais ne protege en rien l'acces direct : cela guide un attaquant vers un repertoire potentiellement sensible."
+              },
+              "help": {
+                "text": "Ne pas utiliser robots.txt comme mecanisme de dissimulation. Supprimer le contenu du repertoire /ftp s'il ne doit pas etre servi, ou le proteger par authentification et controle d'acces cote serveur."
+              },
+              "properties": {
+                "security-severity": "4.16",
+                "tags": [
+                  "security",
+                  "low",
+                  "CWE-200",
+                  "T1083"
+                ]
+              }
+            },
+            {
+              "id": "hsts-non-active-sur-le-service-web",
+              "name": "HSTS non active sur le service web",
+              "shortDescription": {
+                "text": "HSTS non active sur le service web"
+              },
+              "fullDescription": {
+                "text": "L'analyse Nuclei indique l'absence de l'en-tete Strict-Transport-Security sur http://127.0.0.1:3000. Sans HSTS, un utilisateur peut etre redirige vers une connexion non chiffree lors d'une attaque de type downgrade ou interception, ce qui expose les cookies de session."
+              },
+              "help": {
+                "text": "Activer HTTPS avec un certificat valide et renvoyer l'en-tete Strict-Transport-Security avec un max-age suffisant (ex. 31536000) et includeSubDomains."
+              },
+              "properties": {
+                "security-severity": "4.52",
+                "tags": [
+                  "security",
+                  "low",
+                  "CWE-319"
+                ]
+              }
+            },
+            {
+              "id": "en-tete-http-obsolete-feature-policy-encore-utilise",
+              "name": "En-tete HTTP obsolete Feature-Policy encore utilise",
+              "shortDescription": {
+                "text": "En-tete HTTP obsolete Feature-Policy encore utilise"
+              },
+              "fullDescription": {
+                "text": "L'en-tete de reponse Feature-Policy est encore emis (valeur 'payment self'). Cet en-tete est deprecie et remplace par Permissions-Policy : selon les navigateurs, la restriction de fonctionnalites peut devenir inoperante, reduisant la defense en profondeur contre l'abus de fonctionnalites navigateur."
+              },
+              "help": {
+                "text": "Migrer vers Permissions-Policy (ex. permissions-policy: payment=(self)) et supprimer l'en-tete Feature-Policy devenu obsolete."
+              },
+              "properties": {
+                "security-severity": "3.86",
+                "tags": [
+                  "security",
+                  "low",
+                  "CWE-477"
+                ]
+              }
+            },
+            {
+              "id": "en-tetes-de-securite-http-absents",
+              "name": "En-tetes de securite HTTP absents",
+              "shortDescription": {
+                "text": "En-tetes de securite HTTP absents"
+              },
+              "fullDescription": {
+                "text": "Nuclei signale l'absence de plusieurs en-tetes de securite sur http://127.0.0.1:3000, notamment la Content-Security-Policy. L'absence de CSP augmente l'impact d'une eventuelle injection de contenu (XSS) puisqu'aucune restriction de sources de scripts n'est imposee par le navigateur."
+              },
+              "help": {
+                "text": "Ajouter une Content-Security-Policy restrictive (pas de 'unsafe-inline', sources de scripts limitees), ainsi que les autres en-tetes manquants : Referrer-Policy, Permissions-Policy, X-Permitted-Cross-Domain-Policies et COOP/COEP/CORP."
+              },
+              "properties": {
+                "security-severity": "2.3",
+                "tags": [
+                  "security",
+                  "info",
+                  "CWE-693"
+                ]
+              }
+            },
+            {
+              "id": "fichier-security-txt-exposant-un-contact-interne",
+              "name": "Fichier security.txt exposant un contact interne",
+              "shortDescription": {
+                "text": "Fichier security.txt exposant un contact interne"
+              },
+              "fullDescription": {
+                "text": "Un fichier .well-known/security.txt est publiquement accessible et contient une adresse de contact (mailto:donotreply@owasp-juice.shop). Cette information, bien que faiblement sensible, confirme l'organisation proprietaire de la cible et peut alimenter des campagnes de phishing ou d'ingenierie sociale."
+              },
+              "help": {
+                "text": "Verifier que l'adresse de contact publiee est une boite de service dediee et non une adresse exploitable, et limiter l'exposition de ce fichier aux environnements de production uniquement."
+              },
+              "properties": {
+                "security-severity": "2.3",
+                "tags": [
+                  "security",
+                  "info",
+                  "CWE-200",
+                  "T1598"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "endpoint-prometheus-metrics-accessible-sans-authentification",
+          "level": "warning",
+          "message": {
+            "text": "Une page de metriques Prometheus est accessible publiquement sur http://127.0.0.1:3000/metrics. L'exposition de metriques d'observabilite revele des informations internes (versions, chemins, compteurs d'erreurs, parfois noms d'hotes et variables d'environnement) utiles pour cartographier l'application avant exploitation."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "target://127.0.0.1"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "citation_verified": true,
+            "source_citation": "\"template-id\":\"prometheus-metrics\"",
+            "risk_score": 5.48,
+            "risk_level": "medium",
+            "command_used": "nuclei -target 127.0.0.1:3000 -severity info,low,medium,high,critical -jsonl -silent -etags dos,intrusive"
+          }
+        },
+        {
+          "ruleId": "politique-cors-permissive-origine-generique-autorisee",
+          "level": "warning",
+          "message": {
+            "text": "La reponse HTTP du service sur le port 3000 renvoie un en-tete Access-Control-Allow-Origin avec la valeur joker, y compris sur les reponses OPTIONS listant les methodes autorisees. Une politique CORS ouverte permet a n'importe quel site de lire les reponses de l'application au nom d'un utilisateur authentifie si des cookies ou identifiants sont envoyes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "target://127.0.0.1"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "citation_verified": true,
+            "source_citation": "Access-Control-Allow-Origin",
+            "risk_score": 5.48,
+            "risk_level": "medium",
+            "command_used": "nmap -T3 -Pn -sV -p 3000 -oX - 127.0.0.1"
+          }
+        },
+        {
+          "ruleId": "documentation-swagger-openapi-publique",
+          "level": "note",
+          "message": {
+            "text": "Un fichier de specification Swagger est accessible publiquement (http://127.0.0.1:3000/api-docs/swagger.yaml). Il expose l'inventaire complet des routes, parametres et schemas de l'API, ce qui facilite la decouverte d'endpoints non documentes ou mal proteges et la construction de requetes ciblees."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "target://127.0.0.1"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "citation_verified": true,
+            "source_citation": "\"matched-at\":\"http://127.0.0.1:3000/api-docs/swagger.yaml\"",
+            "risk_score": 4.52,
+            "risk_level": "medium",
+            "command_used": "nuclei -target 127.0.0.1:3000 -severity info,low,medium,high,critical -jsonl -silent -etags dos,intrusive"
+          }
+        },
+        {
+          "ruleId": "robots-txt-revelant-le-repertoire-ftp",
+          "level": "note",
+          "message": {
+            "text": "Le fichier robots.txt est present et son contenu extrait par Nuclei expose une entree disallow pointant vers /ftp. Ce type de directive indique aux robots d'indexation un chemin que le proprietaire souhaite masquer, mais ne protege en rien l'acces direct : cela guide un attaquant vers un repertoire potentiellement sensible."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "target://127.0.0.1"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "citation_verified": true,
+            "source_citation": "\"extracted-results\":[\"/ftp\"]",
+            "risk_score": 4.16,
+            "risk_level": "medium",
+            "command_used": "nuclei -target 127.0.0.1:3000 -severity info,low,medium,high,critical -jsonl -silent -etags dos,intrusive"
+          }
+        },
+        {
+          "ruleId": "hsts-non-active-sur-le-service-web",
+          "level": "note",
+          "message": {
+            "text": "L'analyse Nuclei indique l'absence de l'en-tete Strict-Transport-Security sur http://127.0.0.1:3000. Sans HSTS, un utilisateur peut etre redirige vers une connexion non chiffree lors d'une attaque de type downgrade ou interception, ce qui expose les cookies de session."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "target://127.0.0.1"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "citation_verified": true,
+            "source_citation": "\"matcher-name\":\"strict-transport-security\"",
+            "risk_score": 4.52,
+            "risk_level": "medium",
+            "command_used": "nuclei -target 127.0.0.1:3000 -severity info,low,medium,high,critical -jsonl -silent -etags dos,intrusive"
+          }
+        },
+        {
+          "ruleId": "en-tete-http-obsolete-feature-policy-encore-utilise",
+          "level": "note",
+          "message": {
+            "text": "L'en-tete de reponse Feature-Policy est encore emis (valeur 'payment self'). Cet en-tete est deprecie et remplace par Permissions-Policy : selon les navigateurs, la restriction de fonctionnalites peut devenir inoperante, reduisant la defense en profondeur contre l'abus de fonctionnalites navigateur."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "target://127.0.0.1"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "citation_verified": true,
+            "source_citation": "\"extracted-results\":[\"payment 'self'\"]",
+            "risk_score": 3.86,
+            "risk_level": "medium",
+            "command_used": "nuclei -target 127.0.0.1:3000 -severity info,low,medium,high,critical -jsonl -silent -etags dos,intrusive"
+          }
+        },
+        {
+          "ruleId": "en-tetes-de-securite-http-absents",
+          "level": "note",
+          "message": {
+            "text": "Nuclei signale l'absence de plusieurs en-tetes de securite sur http://127.0.0.1:3000, notamment la Content-Security-Policy. L'absence de CSP augmente l'impact d'une eventuelle injection de contenu (XSS) puisqu'aucune restriction de sources de scripts n'est imposee par le navigateur."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "target://127.0.0.1"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "citation_verified": true,
+            "source_citation": "\"matcher-name\":\"content-security-policy\"",
+            "risk_score": 2.3,
+            "risk_level": "low",
+            "command_used": "nuclei -target 127.0.0.1:3000 -severity info,low,medium,high,critical -jsonl -silent -etags dos,intrusive"
+          }
+        },
+        {
+          "ruleId": "fichier-security-txt-exposant-un-contact-interne",
+          "level": "note",
+          "message": {
+            "text": "Un fichier .well-known/security.txt est publiquement accessible et contient une adresse de contact (mailto:donotreply@owasp-juice.shop). Cette information, bien que faiblement sensible, confirme l'organisation proprietaire de la cible et peut alimenter des campagnes de phishing ou d'ingenierie sociale."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "target://127.0.0.1"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "citation_verified": true,
+            "source_citation": "\"extracted-results\":[\" mailto:donotreply@owasp-juice.shop\"]",
+            "risk_score": 2.3,
+            "risk_level": "low",
+            "command_used": "nuclei -target 127.0.0.1:3000 -severity info,low,medium,high,critical -jsonl -silent -etags dos,intrusive"
+          }
+        }
+      ],
+      "properties": {
+        "engagement": "Juice_Shop",
+        "generated_at": "2026-09-11T15:17:30.455484+00:00"
+      }
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+id: CVE-2021-44228
+
+info:
+  name: Apache Log4j RCE (Log4Shell)
+  author: test-author
+  severity: critical
+  description: Detects Apache Log4j2 JNDI remote code execution via crafted log messages.
+  tags: cve,cve2021,rce,log4j,kev

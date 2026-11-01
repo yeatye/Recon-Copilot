@@ -1,0 +1,29 @@
+flowchart TD
+    A["Config engagement.yaml<br/>(scope, profil, LLM)"] --> B["scanner<br/>NmapWrapper + NucleiWrapper"]
+    B -->|"scope hors-liste ?"| B1["BLOQUE + logge<br/>(ScopeViolation)"]
+    B --> C[("raw_scan_results<br/>XML Nmap / JSONL Nuclei")]
+
+    C --> D["parser<br/>nmap_parser + nuclei_parser"]
+    D --> E[("parsed_hosts / parsed_ports<br/>nuclei_detections<br/>+ source_fragment / raw_line")]
+    D -.->|"sortie inexploitable"| E1[("parse_errors")]
+
+    E --> F["correlation<br/>1 appel LLM (OpenAI/Ollama)<br/>+ table CVE/CWE/MITRE statique"]
+    F -->|"verification citation<br/>contre les donnees sources"| G[("correlated_findings<br/>citation_verified: bool")]
+    F -.->|"citation non retrouvee /<br/>JSON invalide"| E1
+
+    G --> H["scoring<br/>severite + exposition + criticite actif"]
+    H --> G
+
+    E -->|"si profil autorise le fuzzing"| I["fuzzing<br/>1 appel LLM (payloads)<br/>-> ffuf -> diff baseline<br/>-> 1 appel LLM (triage anomalies)"]
+    I --> J[("fuzz_results")]
+
+    G --> K["review (CLI interactive)<br/>accepter / editer / rejeter"]
+    K --> L[("correlated_findings<br/>review_status + review_log")]
+
+    L -->|"UNIQUEMENT accepted/edited"| M["report<br/>Markdown + DOCX + PDF<br/>FR + EN"]
+    M --> N["Rapport final<br/>(resume executif, findings,<br/>remediation prioritaire)"]
+
+    style B1 fill:#f8d7da,stroke:#c0392b
+    style E1 fill:#fff3cd,stroke:#b9770e
+    style K fill:#d4edda,stroke:#2e7d32
+    style N fill:#d1ecf1,stroke:#2e86c1

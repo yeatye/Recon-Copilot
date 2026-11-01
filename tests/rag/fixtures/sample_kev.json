@@ -1,0 +1,36 @@
+{
+  "title": "CISA Catalog of Known Exploited Vulnerabilities",
+  "catalogVersion": "2026.08.01",
+  "dateReleased": "2026-08-01T00:00:00.000Z",
+  "count": 3,
+  "vulnerabilities": [
+    {
+      "cveID": "CVE-2021-44228",
+      "vendorProject": "Apache",
+      "product": "Log4j2",
+      "vulnerabilityName": "Apache Log4j2 Remote Code Execution Vulnerability",
+      "dateAdded": "2021-12-10",
+      "shortDescription": "Apache Log4j2 contains a remote code execution vulnerability via JNDI lookups (Log4Shell).",
+      "requiredAction": "Apply updates or mitigations per vendor instructions.",
+      "dueDate": "2021-12-24",
+      "knownRansomwareCampaignUse": "Known",
+      "notes": "",
+      "cwes": ["CWE-502"]
+    },
+    {
+      "cveID": "CVE-2023-99999",
+      "vendorProject": "Example Corp",
+      "product": "Example Panel",
+      "vulnerabilityName": "Example Admin Panel Auth Bypass",
+      "dateAdded": "2023-05-01",
+      "shortDescription": "Authentication bypass in the admin panel allows unauthenticated access.",
+      "requiredAction": "Upgrade to version 2.1 or later.",
+      "dueDate": "2023-05-15",
+      "knownRansomwareCampaignUse": "Unknown"
+    },
+    {
+      "vendorProject": "Missing CVE ID Vendor",
+      "vulnerabilityName": "Entry without cveID, should be skipped"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+# Fichier de configuration d'engagement (a copier vers engagement.yaml et adapter)
+#
+# CE FICHIER EST LA SEULE SOURCE DE VERITE POUR LE SCOPE.
+# Toute cible/port hors de cette allowlist est bloque et logge, jamais juste averti.
+
+engagement:
+  name: "client-exemple-2026"
+  # Nom libre affiche dans le rapport et la piste d'audit
+  analyst: "Houda"
+  # Personne responsable de l'engagement (tracee dans l'audit)
+
+scope:
+  # Hotes/CIDR/domaines explicitement autorises. Aucun wildcard implicite.
+  allowed_targets:
+    - "192.168.56.0/24"
+    - "test.client-exemple.local"
+  # Ports optionnellement restreints (vide = tous ports decouverts par Nmap dans les hotes autorises)
+  allowed_ports: []
+  # Exclusions explicites a l'interieur d'une plage autorisee (ex: hote de prod a ne jamais toucher)
+  excluded_targets:
+    - "192.168.56.254"
+
+aggressiveness:
+  # Valeurs possibles : furtif | standard | agressif
+  default_profile: "standard"
+  # Un override ponctuel est possible via le CLI, mais reste soumis au scope ci-dessus
+  allow_cli_override: true
+
+audit:
+  db_path: "./data/recon_copilot.db"
+
+llm:
+  provider: "opencode"        # opencode | openai | ollama
+  api_key: "sk-REMPLACEZ_PAR_VOTRE_CLE"
+  base_url: "https://opencode.ai/zen/v1"
+  model: "deepseek-v4-flash-free"
+  timeout_seconds: 300
+
+rag:
+  # Module RAG (optionnel, additif) : enrichit la correlation avec les
+  # entrees CISA KEV et les templates Nuclei les plus proches semantiquement.
+  # Embeddings 100% locaux (ONNX, aucune cle API supplementaire -- la cle
+  # OpenCode n'expose pas de endpoint /embeddings).
+  #
+  # Le premier scan indexe les sources (quelques minutes sur CPU, une seule
+  # fois) ; ensuite l'index ChromaDB persistant est reutilise.
+  enabled: true
+  persist_directory: "./data/rag_index"
+  # Telecharge une fois :
+  #   curl -o data/known_exploited_vulnerabilities.json \
+  #     https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+  cisa_kev_path: "./data/known_exploited_vulnerabilities.json"
+  nuclei_templates_dir: "~/.local/nuclei-templates"

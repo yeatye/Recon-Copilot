@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<nmaprun scanner="nmap" args="nmap -T3 -Pn -sV -oX - 10.0.0.5">
+<host>
+<status state="up" reason="user-set"/>
+<address addr="10.0.0.5" addrtype="ipv4"/>
+<hostnames>
+<hostname name="app.client.local" type="user"/>
+</hostnames>
+<ports>
+<extraports state="filtered" count="97">
+<extrareasons reason="no-response" count="97"/>
+</extraports>
+<port protocol="tcp" portid="22">
+<state state="open" reason="syn-ack"/>
+<service name="ssh" product="OpenSSH" version="8.9p1" extrainfo="Ubuntu Linux"/>
+</port>
+<port protocol="tcp" portid="80">
+<state state="open" reason="syn-ack"/>
+<service name="http" product="nginx" version="1.24.0"/>
+<script id="http-title" output="Welcome to nginx!"/>
+</port>
+<port protocol="tcp" portid="139">
+<state state="filtered" reason="no-response"/>
+<service name="netbios-ssn"/>
+</port>
+</ports>
+</host>
+<host>
+<status state="down" reason="no-response"/>
+<address addr="10.0.0.6" addrtype="ipv4"/>
+<hostnames/>
+<ports/>
+</host>
+</nmaprun>

@@ -1,0 +1,3 @@
+info:
+  name: Missing id field, should be skipped
+  severity: low
