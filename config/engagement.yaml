@@ -29,7 +29,7 @@ audit:
 
 llm:
   provider: "opencode"        # opencode | openai | ollama
-  api_key: "sk-DkEGFl7bRHodIkYr5hZuA6vWIKKVwpOgf1jnLQsZXelN1n5M34DJZ54N21uqDBju"
+  api_key: ""
   base_url: "https://opencode.ai/zen/go/v1"
   model: "deepseek-v4-flash"
   timeout_seconds: 1200
