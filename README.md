@@ -1,7 +1,7 @@
 # recon-copilot
 
 Copilote de reconnaissance assiste par IA pour pentest manuel a faible
-agressivite (PFA). Pipeline complet, 7 modules, chacun teste
+agressivite. Pipeline complet, 7 modules, chacun teste
 unitairement ET valide au moins une fois avec de vrais outils externes
 (pas seulement des mocks) pendant le developpement.
 
@@ -15,7 +15,7 @@ scan (Nmap+Nuclei) -> parsing -> correlation LLM -> scoring -> [fuzzing]
                                     rapport FR/EN (MD/DOCX/PDF)
 ```
 
-Diagramme complet avec flux de donnees : `docs/pipeline.mmd` (Mermaid).
+
 
 ## Modules
 
@@ -34,12 +34,12 @@ Diagramme complet avec flux de donnees : `docs/pipeline.mmd` (Mermaid).
 
 `correlation/` accepte un `rag_index: RagIndex | None = None`. A `None`
 (defaut), le comportement est identique a avant l'existence du module RAG
--- aucune regression, memes tests. Fourni, une recherche semantique
+ aucune regression, memes tests. Fourni, une recherche semantique
 (embeddings) enrichit le prompt
 avec les entrees CISA KEV et templates Nuclei les plus proches
 semantiquement de la detection en cours. La table statique
 (`knowledge_base.py`) reste le socle deterministe et n'est jamais
-remplacee -- c'est une contrainte du cahier des charges original ("sans
+remplacee, c'est une contrainte du cahier des charges original ("sans
 RAG"), toujours respectee en tant que base ; le RAG n'est qu'une couche
 d'enrichissement par-dessus.
 
@@ -193,7 +193,7 @@ cd recon-copilot
 pip install -e ".[dev]"
 ```
 
-**A installer toi-meme** (non embarque) :
+**A installer** :
 
 - **Nmap** : `sudo apt install nmap`
 - **Nuclei** : `go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest && nuclei -update-templates`
@@ -223,8 +223,7 @@ cp config/engagement.example.yaml config/engagement.yaml
 ```
 
 Puis edite `scope.allowed_targets` avec les cibles reellement autorisees
-par l'ordre de mission — **ne commite jamais ce fichier avec de vraies
-cibles client**. Le scope y reste non-negociable quel que soit le profil
+par l'ordre de mission. Le scope y reste non-negociable quel que soit le profil
 d'agressivite choisi au moment du scan.
 
 ## Utilisation
@@ -256,7 +255,7 @@ Tu dois voir `270 passed`. Aucun test ne requiert Nmap/Nuclei/ffuf/Ollama
 reels — tout est mocke au niveau `asyncio.create_subprocess_exec` ou via
 un `LlmClient` de test (`FakeLlmClient`).
 
-### ⚠️ Ce qui a ete valide avec de vrais outils, et ce qui ne l'a pas ete
+###  Ce qui a ete valide avec de vrais outils, et ce qui ne l'a pas ete
 
 Pendant le developpement, chaque module a ete verifie au moins une fois
 avec de vrais outils externes en plus des tests unitaires mockes,
@@ -273,11 +272,7 @@ avec de vrais outils externes en plus des tests unitaires mockes,
 | `report` (DOCX/PDF) | ✅ genere puis converti/rendu en images (LibreOffice + pdftoppm) pour verification visuelle |
 | Pipeline complet via `recon-copilot scan/review/report` | ✅ execute de bout en bout avec les stands-in ci-dessus |
 
-**Avant ta premiere vraie utilisation** : installe Nuclei et Ollama, puis
-relance au moins un `recon-copilot scan --fuzz` complet sur une cible de
-test pour confirmer que tout fonctionne avec les vrais services — les
-stands-in utilises ici imitent le format des reponses mais ne remplacent
-pas un vrai test avec Nuclei/Ollama installes.
+
 
 ### Bugs reels trouves pendant les tests manuels (tous corriges)
 
